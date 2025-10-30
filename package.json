@@ -1,0 +1,17 @@
+{
+  "name": "trademart-neon",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "TradeMart - E-Ticaret & Borsa Platformu with Neon Database",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
