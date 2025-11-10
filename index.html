@@ -370,28 +370,33 @@
                     </h3>
                     
                     <div className="grid md:grid-cols-2 gap-6">
+                      {/* Basamak 1 */}
                       <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3">
+                        <div className="flex items-start space-x-3 mb-3">
                           <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">1</div>
                           <div>
                             <p className="font-bold text-gray-800 text-lg mb-2">Emtia Ticareti Mantığı</p>
                             <p className="text-gray-700">Gerçek hayattaki emtia ticareti gibi çalışır. Düşükten al, yüksekten sat! Fiyatlar piyasa dinamiklerine göre sürekli değişir.</p>
                           </div>
                         </div>
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=200&fit=crop" alt="Trading Charts" className="w-full h-32 object-cover rounded-lg mt-3" />
                       </div>
                       
+                      {/* Basamak 2 */}
                       <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3">
+                        <div className="flex items-start space-x-3 mb-3">
                           <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">2</div>
                           <div>
                             <p className="font-bold text-gray-800 text-lg mb-2">Akıllı Alım-Satım</p>
                             <p className="text-gray-700">Ürünleri sabit fiyattan satın alın, piyasa fiyatları değişince kârlı satışlar yapın.</p>
                           </div>
                         </div>
+                        <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=400&h=200&fit=crop" alt="Shopping" className="w-full h-32 object-cover rounded-lg mt-3" />
                       </div>
                       
+                      {/* Basamak 3 */}
                       <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3">
+                        <div className="flex items-start space-x-3 mb-3">
                           <div className="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">3</div>
                           <div>
                             <p className="font-bold text-gray-800 text-lg mb-2">Çift Kazanç Sistemi</p>
@@ -401,28 +406,44 @@
                             </p>
                           </div>
                         </div>
+                        <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=200&fit=crop" alt="Delivery" className="w-full h-32 object-cover rounded-lg mt-3" />
                       </div>
                       
+                      {/* Basamak 4 */}
                       <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3">
+                        <div className="flex items-start space-x-3 mb-3">
                           <div className="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">4</div>
                           <div>
                             <p className="font-bold text-gray-800 text-lg mb-2">Sınırsız İşlem</p>
                             <p className="text-gray-700">İstediğiniz kadar ürün alıp satabilirsiniz! Bakiye sınırı yok.</p>
                           </div>
                         </div>
+                        <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&h=200&fit=crop" alt="Unlimited" className="w-full h-32 object-cover rounded-lg mt-3" />
                       </div>
                     </div>
                     
+                    {/* Örnek Senaryo - Güncellenmiş */}
                     <div className="mt-6 bg-white rounded-xl p-5 border-2 border-indigo-300 shadow-sm">
                       <p className="text-sm font-bold text-indigo-600 mb-3 flex items-center">
                         <span className="text-2xl mr-2">💰</span>ÖRNEK SENARYO:
                       </p>
-                      <p className="text-gray-700 leading-relaxed">
-                        Kalemi <span className="font-bold text-lg">50 TL</span>'den 10 adet al → Toplam: <span className="font-bold">500 TL</span><br/>
-                        Piyasa fiyatı <span className="font-bold text-green-600 text-lg">55 TL</span>'ye çıkınca sat → Gelir: <span className="font-bold">550 TL</span><br/>
-                        <span className="font-bold text-green-600 text-xl">Kar: +50 TL (%10)</span> 🎉
-                      </p>
+                      <div className="text-gray-700 leading-relaxed space-y-2">
+                        <p>
+                          <span className="font-bold text-lg">Dolma Kalemi</span> <span className="font-bold">50 TL</span>'den 10 adet al → Toplam: <span className="font-bold">500 TL</span>
+                        </p>
+                        
+                        <div className="bg-green-50 rounded-lg p-3 border-l-4 border-green-500">
+                          <p className="font-semibold text-green-700 mb-1">✅ SEÇENEK 1: Borsada Sat</p>
+                          <p>Piyasa fiyatı <span className="font-bold text-green-600 text-lg">55 TL</span>'ye çıkınca sat → Gelir: <span className="font-bold">550 TL</span><br/>
+                          <span className="font-bold text-green-600 text-xl">Kar: +50 TL (%10)</span> 🎉</p>
+                        </div>
+                        
+                        <div className="bg-blue-50 rounded-lg p-3 border-l-4 border-blue-500">
+                          <p className="font-semibold text-blue-700 mb-1">✅ SEÇENEK 2: Evine Kargola</p>
+                          <p>İstersen ürünü satmak yerine direkt <span className="font-bold text-blue-600">evine kargolat</span>! 📦<br/>
+                          Portföyünden çıkar, siparişlerime eklenir. Kullanmak için al!</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
