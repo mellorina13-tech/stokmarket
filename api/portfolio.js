@@ -14,26 +14,26 @@ export default async function handler(req, res) {
     res.status(200).end();
     return;
   }
-  
-  const { userId, portfolio } = req.body;
-  
+
   try {
     // GET - Portföyü Getir
     if (req.method === 'GET') {
       const result = await sql`
         SELECT * FROM portfolios WHERE user_id = ${req.query.userId}
       `;
-      
+
       return res.status(200).json(result);
     }
-    
+
     // POST - Portföyü Güncelle
     if (req.method === 'POST') {
+      const { userId, portfolio } = req.body;
+
       // Önce mevcut portföyü sil
       await sql`
         DELETE FROM portfolios WHERE user_id = ${userId}
       `;
-      
+
       // Yeni portföy öğelerini ekle
       if (portfolio && portfolio.length > 0) {
         for (const item of portfolio) {
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
           `;
         }
       }
-      
+
       return res.status(200).json({ success: true });
     }
     

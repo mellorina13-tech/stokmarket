@@ -3,11 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StokMarket - E-Ticaret & Borsa Platformu</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
-  
+  <title>TradeMart - E-Ticaret & Borsa Platformu</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -20,16 +16,24 @@
     const { useState, useEffect } = React;
     
     // ⚠️ NEON API CONFIGURATION
-    const API_BASE_URL = window.location.origin;
+    const API_BASE_URL = window.location.origin; // Vercel otomatik ayarlar
     
     // API Helper Functions
     const api = {
+      // Kullanıcı Kayıt
       async register(email, password, fullName) {
         try {
           const response = await fetch(`${API_BASE_URL}/api/auth`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'register', email, password, fullName })
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              action: 'register',
+              email, 
+              password, 
+              fullName 
+            })
           });
           return await response.json();
         } catch (error) {
@@ -38,12 +42,19 @@
         }
       },
       
+      // Kullanıcı Giriş
       async login(email, password) {
         try {
           const response = await fetch(`${API_BASE_URL}/api/auth`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'login', email, password })
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              action: 'login',
+              email, 
+              password 
+            })
           });
           return await response.json();
         } catch (error) {
@@ -52,12 +63,18 @@
         }
       },
       
+      // Kullanıcı Verilerini Getir
       async getUserData(userId) {
         try {
           const response = await fetch(`${API_BASE_URL}/api/auth`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'getUserData', userId })
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              action: 'getUserData',
+              userId 
+            })
           });
           return await response.json();
         } catch (error) {
@@ -66,6 +83,7 @@
         }
       },
       
+      // Portföy Getir
       async getPortfolio(userId) {
         try {
           const response = await fetch(`${API_BASE_URL}/api/portfolio?userId=${userId}`);
@@ -76,11 +94,14 @@
         }
       },
       
+      // Portföy Güncelle
       async updatePortfolio(userId, portfolio) {
         try {
           const response = await fetch(`${API_BASE_URL}/api/portfolio`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ userId, portfolio })
           });
           return await response.json();
@@ -90,12 +111,19 @@
         }
       },
       
+      // Bakiye Güncelle
       async updateBalance(userId, balance) {
         try {
           const response = await fetch(`${API_BASE_URL}/api/auth`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'updateBalance', userId, balance })
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+              action: 'updateBalance',
+              userId, 
+              balance 
+            })
           });
           return await response.json();
         } catch (error) {
@@ -109,8 +137,10 @@
     const Icons = {
       TrendingUp: () => (<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>),
       Wallet: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>),
-      LogOut: () => (<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>),
+      Package: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>),
+      ShoppingCart: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>),
       LogIn: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>),
+      LogOut: () => (<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>),
       UserPlus: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>),
       Mail: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>),
       Lock: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>),
@@ -119,56 +149,74 @@
       User: () => (<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>),
     };
     
-    // Ürünler - Resimli
+    // Ürünler
     const INITIAL_PRODUCTS = [
-      { id: 1, name: 'Kalem', price: 50, marketPrice: 50, category: 'Kırtasiye', stock: 1000, priceHistory: [], image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&h=300&fit=crop' },
-      { id: 2, name: 'Defter', price: 30, marketPrice: 30, category: 'Kırtasiye', stock: 500, priceHistory: [], image: 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=400&h=300&fit=crop' },
-      { id: 3, name: 'Silgi', price: 10, marketPrice: 10, category: 'Kırtasiye', stock: 800, priceHistory: [], image: 'https://images.unsplash.com/photo-1611532736579-6b16e2b50449?w=400&h=300&fit=crop' },
-      { id: 4, name: 'Kalemtıraş', price: 15, marketPrice: 15, category: 'Kırtasiye', stock: 600, priceHistory: [], image: 'https://images.unsplash.com/photo-1588075592446-265fd1e6e76f?w=400&h=300&fit=crop' },
-      { id: 5, name: 'Cetvel', price: 20, marketPrice: 20, category: 'Kırtasiye', stock: 700, priceHistory: [], image: 'https://images.unsplash.com/photo-1596495577886-d920f1fb7238?w=400&h=300&fit=crop' },
-      { id: 6, name: 'Makas', price: 35, marketPrice: 35, category: 'Kırtasiye', stock: 400, priceHistory: [], image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&h=300&fit=crop' },
+      { id: 1, name: 'Kalem', price: 50, marketPrice: 50, category: 'Kırtasiye', stock: 1000, priceHistory: [] },
+      { id: 2, name: 'Defter', price: 30, marketPrice: 30, category: 'Kırtasiye', stock: 500, priceHistory: [] },
+      { id: 3, name: 'Silgi', price: 10, marketPrice: 10, category: 'Kırtasiye', stock: 800, priceHistory: [] },
+      { id: 4, name: 'Kalemtıraş', price: 15, marketPrice: 15, category: 'Kırtasiye', stock: 600, priceHistory: [] },
+      { id: 5, name: 'Cetvel', price: 20, marketPrice: 20, category: 'Kırtasiye', stock: 700, priceHistory: [] },
+      { id: 6, name: 'Makas', price: 35, marketPrice: 35, category: 'Kırtasiye', stock: 400, priceHistory: [] },
     ];
     
     function App() {
+      // Authentication States
       const [isAuthenticated, setIsAuthenticated] = useState(false);
       const [currentUser, setCurrentUser] = useState(null);
-      const [authMode, setAuthMode] = useState('login');
+      const [userToken, setUserToken] = useState(null);
+      const [showAuthModal, setShowAuthModal] = useState(true);
+      const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
       const [showPassword, setShowPassword] = useState(false);
+      
+      // Auth Form States
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const [fullName, setFullName] = useState('');
       const [authError, setAuthError] = useState('');
       const [authLoading, setAuthLoading] = useState(false);
+      
+      // Main States
       const [currentPage, setCurrentPage] = useState('market');
       const [products, setProducts] = useState(INITIAL_PRODUCTS);
       const [portfolio, setPortfolio] = useState([]);
       const [orders, setOrders] = useState([]);
-      const [balance, setBalance] = useState(0);
+      const [balance, setBalance] = useState(10000);
+      
+      // Borsa Modal States
       const [showChartModal, setShowChartModal] = useState(false);
       const [selectedProduct, setSelectedProduct] = useState(null);
       const [tradeAmount, setTradeAmount] = useState(1);
       const [tradeType, setTradeType] = useState('buy');
       
+      // Session kontrolü
       useEffect(() => {
-        const savedUser = localStorage.getItem('stokmarket_user');
-        const savedToken = localStorage.getItem('stokmarket_token');
+        const savedUser = localStorage.getItem('trademart_user');
+        const savedToken = localStorage.getItem('trademart_token');
+        
         if (savedUser && savedToken) {
           try {
             const user = JSON.parse(savedUser);
             setCurrentUser(user);
+            setUserToken(savedToken);
             setIsAuthenticated(true);
+            setShowAuthModal(false);
+            
+            // Kullanıcı verilerini yükle
             loadUserData(user.id);
           } catch (error) {
-            localStorage.removeItem('stokmarket_user');
-            localStorage.removeItem('stokmarket_token');
+            console.error('Session error:', error);
+            localStorage.removeItem('trademart_user');
+            localStorage.removeItem('trademart_token');
           }
         }
       }, []);
       
+      // Kullanıcı verilerini yükle
       const loadUserData = async (userId) => {
         try {
           const userData = await api.getUserData(userId);
-          setBalance(userData.balance || 0);
+          setBalance(userData.balance || 10000);
+          
           const portfolioData = await api.getPortfolio(userId);
           setPortfolio(portfolioData || []);
         } catch (error) {
@@ -176,11 +224,13 @@
         }
       };
       
+      // Fiyat simülasyonu
       useEffect(() => {
         const interval = setInterval(() => {
           setProducts(prev => prev.map(product => {
             const change = (Math.random() - 0.5) * 10;
             const newPrice = Math.max(5, product.marketPrice + change);
+            
             const candleData = {
               time: Date.now(),
               open: product.marketPrice,
@@ -188,335 +238,1075 @@
               low: Math.min(product.marketPrice, newPrice),
               close: newPrice
             };
-            return { ...product, marketPrice: newPrice, priceHistory: [...(product.priceHistory || []), candleData].slice(-20) };
+            
+            const newHistory = [...(product.priceHistory || []), candleData].slice(-20);
+            
+            return { 
+              ...product, 
+              marketPrice: newPrice,
+              priceHistory: newHistory
+            };
           }));
         }, 3000);
         return () => clearInterval(interval);
       }, []);
       
+      // Kayıt İşlemi
       const handleRegister = async (e) => {
         e.preventDefault();
         setAuthError('');
         setAuthLoading(true);
-        if (!email || !password || !fullName) { setAuthError('Lütfen tüm alanları doldurun!'); setAuthLoading(false); return; }
-        if (password.length < 6) { setAuthError('Şifre en az 6 karakter olmalı!'); setAuthLoading(false); return; }
-        if (!email.includes('@')) { setAuthError('Geçerli bir email girin!'); setAuthLoading(false); return; }
+        
+        // Validation
+        if (!email || !password || !fullName) {
+          setAuthError('Lütfen tüm alanları doldurun!');
+          setAuthLoading(false);
+          return;
+        }
+        
+        if (password.length < 6) {
+          setAuthError('Şifre en az 6 karakter olmalı!');
+          setAuthLoading(false);
+          return;
+        }
+        
+        if (!email.includes('@')) {
+          setAuthError('Geçerli bir email girin!');
+          setAuthLoading(false);
+          return;
+        }
+        
         try {
           const result = await api.register(email, password, fullName);
+          
           if (result.success) {
             setCurrentUser(result.user);
+            setUserToken(result.token);
             setIsAuthenticated(true);
-            localStorage.setItem('stokmarket_user', JSON.stringify(result.user));
-            localStorage.setItem('stokmarket_token', result.token);
+            setShowAuthModal(false);
+            
+            // Session kaydet
+            localStorage.setItem('trademart_user', JSON.stringify(result.user));
+            localStorage.setItem('trademart_token', result.token);
+            
+            // Kullanıcı verilerini yükle
             await loadUserData(result.user.id);
-            setEmail(''); setPassword(''); setFullName('');
+            
+            // Form temizle
+            setEmail('');
+            setPassword('');
+            setFullName('');
           } else {
             setAuthError(result.message || 'Kayıt başarısız!');
           }
         } catch (error) {
-          setAuthError('Bağlantı hatası!');
+          setAuthError('Bağlantı hatası! Lütfen tekrar deneyin.');
+          console.error('Register error:', error);
         } finally {
           setAuthLoading(false);
         }
       };
       
+      // Giriş İşlemi
       const handleLogin = async (e) => {
         e.preventDefault();
         setAuthError('');
         setAuthLoading(true);
-        if (!email || !password) { setAuthError('Email ve şifre gerekli!'); setAuthLoading(false); return; }
+        
+        // Validation
+        if (!email || !password) {
+          setAuthError('Email ve şifre gerekli!');
+          setAuthLoading(false);
+          return;
+        }
+        
         try {
           const result = await api.login(email, password);
+          
           if (result.success) {
             setCurrentUser(result.user);
+            setUserToken(result.token);
             setIsAuthenticated(true);
-            localStorage.setItem('stokmarket_user', JSON.stringify(result.user));
-            localStorage.setItem('stokmarket_token', result.token);
+            setShowAuthModal(false);
+            
+            // Session kaydet
+            localStorage.setItem('trademart_user', JSON.stringify(result.user));
+            localStorage.setItem('trademart_token', result.token);
+            
+            // Kullanıcı verilerini yükle
             await loadUserData(result.user.id);
-            setEmail(''); setPassword('');
+            
+            // Form temizle
+            setEmail('');
+            setPassword('');
           } else {
             setAuthError(result.message || 'Giriş başarısız!');
           }
         } catch (error) {
-          setAuthError('Bağlantı hatası!');
+          setAuthError('Bağlantı hatası! Lütfen tekrar deneyin.');
+          console.error('Login error:', error);
         } finally {
           setAuthLoading(false);
         }
       };
       
+      // Çıkış
       const handleLogout = () => {
         if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
-          localStorage.removeItem('stokmarket_user');
-          localStorage.removeItem('stokmarket_token');
+          localStorage.removeItem('trademart_user');
+          localStorage.removeItem('trademart_token');
           setCurrentUser(null);
+          setUserToken(null);
           setIsAuthenticated(false);
-          setBalance(0);
+          setBalance(10000);
           setPortfolio([]);
           setOrders([]);
           setCurrentPage('market');
+          setShowAuthModal(true);
         }
       };
       
+      // Satın alma
       const quickBuy = async (product, quantity) => {
         const totalCost = product.price * quantity;
+        if (totalCost > balance) {
+          alert('Yetersiz bakiye!');
+          return;
+        }
+        
         const newBalance = balance - totalCost;
         setBalance(newBalance);
+        
         const existing = portfolio.find(p => p.productId === product.id);
         let newPortfolio;
+        
         if (existing) {
-          newPortfolio = portfolio.map(p => p.productId === product.id ? { ...p, quantity: p.quantity + quantity, totalInvested: p.totalInvested + totalCost, avgBuyPrice: (p.totalInvested + totalCost) / (p.quantity + quantity) } : p);
+          newPortfolio = portfolio.map(p => 
+            p.productId === product.id
+              ? { ...p, quantity: p.quantity + quantity, totalInvested: p.totalInvested + totalCost, avgBuyPrice: (p.totalInvested + totalCost) / (p.quantity + quantity) }
+              : p
+          );
         } else {
-          newPortfolio = [...portfolio, { productId: product.id, productName: product.name, quantity: quantity, avgBuyPrice: product.price, totalInvested: totalCost }];
+          newPortfolio = [...portfolio, {
+            productId: product.id,
+            productName: product.name,
+            quantity: quantity,
+            avgBuyPrice: product.price,
+            totalInvested: totalCost
+          }];
         }
+        
         setPortfolio(newPortfolio);
+        
+        // Database'e kaydet
         try {
           await api.updateBalance(currentUser.id, newBalance);
           await api.updatePortfolio(currentUser.id, newPortfolio);
-        } catch (error) {}
+        } catch (error) {
+          console.error('Buy error:', error);
+        }
+        
         alert(`✅ ${quantity} adet ${product.name} satın alındı!`);
       };
       
+      // Satış
       const sellProduct = async (portfolioItem, quantity) => {
         const product = products.find(p => p.id === portfolioItem.productId);
         const salePrice = product.marketPrice * quantity;
         const profit = (product.marketPrice - portfolioItem.avgBuyPrice) * quantity;
+        
         const newBalance = balance + salePrice;
         setBalance(newBalance);
-        const newPortfolio = portfolio.map(p => p.productId === portfolioItem.productId ? { ...p, quantity: p.quantity - quantity } : p).filter(p => p.quantity > 0);
+        
+        const newPortfolio = portfolio.map(p => 
+          p.productId === portfolioItem.productId
+            ? { ...p, quantity: p.quantity - quantity }
+            : p
+        ).filter(p => p.quantity > 0);
+        
         setPortfolio(newPortfolio);
+        
+        // Database'e kaydet
         try {
           await api.updateBalance(currentUser.id, newBalance);
           await api.updatePortfolio(currentUser.id, newPortfolio);
-        } catch (error) {}
+        } catch (error) {
+          console.error('Sell error:', error);
+        }
+        
         alert(`✅ ${quantity} adet satıldı!\n💰 Gelir: ${salePrice.toFixed(2)} TL\n📊 Kar/Zarar: ${profit > 0 ? '+' : ''}${profit.toFixed(2)} TL`);
       };
       
+      // Kargo
       const orderShipping = (portfolioItem, quantity) => {
-        const newPortfolio = portfolio.map(p => p.productId === portfolioItem.productId ? { ...p, quantity: p.quantity - quantity } : p).filter(p => p.quantity > 0);
+        const newPortfolio = portfolio.map(p => 
+          p.productId === portfolioItem.productId
+            ? { ...p, quantity: p.quantity - quantity }
+            : p
+        ).filter(p => p.quantity > 0);
+        
         setPortfolio(newPortfolio);
-        setOrders([...orders, { id: Date.now(), productName: portfolioItem.productName, quantity, status: 'Kargoya Verildi', date: new Date().toLocaleDateString('tr-TR') }]);
-        alert(`📦 ${quantity} adet ${portfolioItem.productName} kargoya verildi!`);
+        
+        setOrders([...orders, {
+          id: Date.now(),
+          productName: portfolioItem.productName,
+          quantity,
+          status: 'Kargoya Verildi',
+          date: new Date().toLocaleDateString('tr-TR')
+        }]);
+        
+        alert(`${quantity} adet ${portfolioItem.productName} kargoya verildi!`);
       };
       
+      // Borsa - Hızlı Al
       const quickBuyFromChart = async () => {
-        if (!selectedProduct || tradeAmount <= 0) return;
+        if (!selectedProduct) return;
+        
         const totalCost = selectedProduct.price * tradeAmount;
+        if (totalCost > balance) {
+          alert('Yetersiz bakiye!');
+          return;
+        }
+        
+        if (tradeAmount <= 0) {
+          alert('Geçerli bir miktar girin!');
+          return;
+        }
+        
         const newBalance = balance - totalCost;
         setBalance(newBalance);
+        
         const existing = portfolio.find(p => p.productId === selectedProduct.id);
         let newPortfolio;
+        
         if (existing) {
-          newPortfolio = portfolio.map(p => p.productId === selectedProduct.id ? { ...p, quantity: p.quantity + tradeAmount, totalInvested: p.totalInvested + totalCost, avgBuyPrice: (p.totalInvested + totalCost) / (p.quantity + tradeAmount) } : p);
+          newPortfolio = portfolio.map(p => 
+            p.productId === selectedProduct.id
+              ? { 
+                  ...p, 
+                  quantity: p.quantity + tradeAmount,
+                  totalInvested: p.totalInvested + totalCost,
+                  avgBuyPrice: (p.totalInvested + totalCost) / (p.quantity + tradeAmount)
+                }
+              : p
+          );
         } else {
-          newPortfolio = [...portfolio, { productId: selectedProduct.id, productName: selectedProduct.name, quantity: tradeAmount, avgBuyPrice: selectedProduct.price, totalInvested: totalCost }];
+          newPortfolio = [...portfolio, {
+            productId: selectedProduct.id,
+            productName: selectedProduct.name,
+            quantity: tradeAmount,
+            avgBuyPrice: selectedProduct.price,
+            totalInvested: totalCost
+          }];
         }
+        
         setPortfolio(newPortfolio);
+        
+        // Database'e kaydet
         try {
           await api.updateBalance(currentUser.id, newBalance);
           await api.updatePortfolio(currentUser.id, newPortfolio);
-        } catch (error) {}
+        } catch (error) {
+          console.error('Buy from chart error:', error);
+        }
+        
         alert(`✅ ${tradeAmount} adet ${selectedProduct.name} satın alındı!`);
         setTradeAmount(1);
       };
       
+      // Borsa - Hızlı Sat
       const quickSellFromChart = async () => {
         if (!selectedProduct) return;
+        
         const portfolioItem = portfolio.find(p => p.productId === selectedProduct.id);
-        if (!portfolioItem) { alert('Bu üründen portföyünüzde yok!'); return; }
-        if (tradeAmount > portfolioItem.quantity) { alert(`Sadece ${portfolioItem.quantity} adetiniz var!`); return; }
-        if (tradeAmount <= 0) return;
+        
+        if (!portfolioItem) {
+          alert('Bu üründen portföyünüzde yok!');
+          return;
+        }
+        
+        if (tradeAmount > portfolioItem.quantity) {
+          alert(`Sadece ${portfolioItem.quantity} adetiniz var!`);
+          return;
+        }
+        
+        if (tradeAmount <= 0) {
+          alert('Geçerli bir miktar girin!');
+          return;
+        }
+        
         const salePrice = selectedProduct.marketPrice * tradeAmount;
         const profit = (selectedProduct.marketPrice - portfolioItem.avgBuyPrice) * tradeAmount;
+        
         const newBalance = balance + salePrice;
         setBalance(newBalance);
-        const newPortfolio = portfolio.map(p => p.productId === selectedProduct.id ? { ...p, quantity: p.quantity - tradeAmount } : p).filter(p => p.quantity > 0);
+        
+        const newPortfolio = portfolio.map(p => 
+          p.productId === selectedProduct.id
+            ? { ...p, quantity: p.quantity - tradeAmount }
+            : p
+        ).filter(p => p.quantity > 0);
+        
         setPortfolio(newPortfolio);
+        
+        // Database'e kaydet
         try {
           await api.updateBalance(currentUser.id, newBalance);
           await api.updatePortfolio(currentUser.id, newPortfolio);
-        } catch (error) {}
-        alert(`✅ ${tradeAmount} adet satıldı!\n💰 Satış: ${salePrice.toFixed(2)} TL\n📊 Kar/Zarar: ${profit > 0 ? '+' : ''}${profit.toFixed(2)} TL`);
+        } catch (error) {
+          console.error('Sell from chart error:', error);
+        }
+        
+        alert(`✅ ${tradeAmount} adet ${selectedProduct.name} satıldı!\n💰 Satış: ${salePrice.toFixed(2)} TL\n📊 Kar/Zarar: ${profit > 0 ? '+' : ''}${profit.toFixed(2)} TL`);
         setTradeAmount(1);
       };
       
-      if (!isAuthenticated) {
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
-            <header className="bg-white shadow-md">
-              <div className="container mx-auto px-4 py-4">
-                <div className="flex items-center justify-center space-x-2">
-                  <Icons.TrendingUp />
-                  <h1 className="text-3xl font-bold text-gray-800">StokMarket</h1>
-                </div>
-              </div>
-            </header>
-            
-            <div className="container mx-auto px-4 py-12">
-              <div className="max-w-6xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
-                  <div className="relative h-64 md:h-96">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=400&fit=crop" alt="Trading" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/80 to-purple-900/80 flex items-center justify-center">
-                      <div className="text-center text-white px-4">
-                        <h2 className="text-5xl font-bold mb-4">StokMarket'a Hoş Geldiniz!</h2>
-                        <p className="text-2xl mb-2">E-Ticaret & Borsa Trading Platformu</p>
-                        <p className="text-xl opacity-90">📈 Sınırsız Alım-Satım İmkanı</p>
-                      </div>
-                    </div>
+      return (
+        <div className="min-h-screen bg-gray-100">
+          {/* Auth Modal */}
+          {showAuthModal && !isAuthenticated && (
+            <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white rounded-2xl max-w-2xl w-full p-8 my-8">
+                {/* Logo */}
+                <div className="text-center mb-8">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <Icons.TrendingUp />
+                    <h1 className="text-3xl font-bold text-gray-800">TradeMart</h1>
                   </div>
+                  <p className="text-gray-600 text-lg">E-Ticaret & Borsa Trading Platformu</p>
                 </div>
                 
-                <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                  <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                      <span className="bg-indigo-600 text-white w-10 h-10 rounded-full flex items-center justify-center mr-3">💡</span>
-                      Platform Nasıl Çalışır?
-                    </h3>
-                    
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3 mb-3">
-                          <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">1</div>
-                          <div>
-                            <p className="font-bold text-gray-800 text-lg mb-2">Emtia Ticareti Mantığı</p>
-                            <p className="text-gray-700">Gerçek hayattaki emtia ticareti gibi çalışır. Düşükten al, yüksekten sat! Fiyatlar piyasa dinamiklerine göre sürekli değişir.</p>
-                          </div>
-                        </div>
-                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=200&fit=crop" alt="Trading Charts" className="w-full h-32 object-cover rounded-lg mt-3" />
+                {/* Platform Açıklaması */}
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <span className="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">💡</span>
+                    Platform Nasıl Çalışır?
+                  </h2>
+                  
+                  <div className="space-y-4 text-gray-700">
+                    {/* Emtia Alımı Benzeri */}
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs">1</span>
                       </div>
-                      
-                      <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3 mb-3">
-                          <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">2</div>
-                          <div>
-                            <p className="font-bold text-gray-800 text-lg mb-2">Akıllı Alım-Satım</p>
-                            <p className="text-gray-700">Ürünleri sabit fiyattan satın alın, piyasa fiyatları değişince kârlı satışlar yapın.</p>
-                          </div>
-                        </div>
-                        <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=400&h=200&fit=crop" alt="Shopping" className="w-full h-32 object-cover rounded-lg mt-3" />
-                      </div>
-                      
-                      <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3 mb-3">
-                          <div className="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">3</div>
-                          <div>
-                            <p className="font-bold text-gray-800 text-lg mb-2">Çift Kazanç Sistemi</p>
-                            <p className="text-gray-700">
-                              <span className="font-semibold text-green-600">Borsada sat</span> → Anlık kâr!
-                              <br/><span className="font-semibold text-blue-600">Kargoya ver</span> → Gerçek satış!
-                            </p>
-                          </div>
-                        </div>
-                        <img src="https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400&h=200&fit=crop" alt="Delivery" className="w-full h-32 object-cover rounded-lg mt-3" />
-                      </div>
-                      
-                      <div className="bg-white rounded-lg p-5 shadow-sm">
-                        <div className="flex items-start space-x-3 mb-3">
-                          <div className="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 text-sm font-bold">4</div>
-                          <div>
-                            <p className="font-bold text-gray-800 text-lg mb-2">Sınırsız İşlem</p>
-                            <p className="text-gray-700">İstediğiniz kadar ürün alıp satabilirsiniz! Bakiye sınırı yok.</p>
-                          </div>
-                        </div>
-                        <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&h=200&fit=crop" alt="Unlimited" className="w-full h-32 object-cover rounded-lg mt-3" />
+                      <div>
+                        <p className="font-semibold text-gray-800">Emtia Ticareti Mantığı</p>
+                        <p className="text-sm">Gerçek hayattaki emtia (commodity) ticareti gibi çalışır. Düşükten al, yüksekten sat! Fiyatlar piyasa dinamiklerine göre sürekli değişir.</p>
                       </div>
                     </div>
                     
-                    <div className="mt-6 bg-white rounded-xl p-5 border-2 border-indigo-300 shadow-sm">
-                      <p className="text-sm font-bold text-indigo-600 mb-3 flex items-center">
-                        <span className="text-2xl mr-2">💰</span>ÖRNEK SENARYO:
-                      </p>
-                      <div className="text-gray-700 leading-relaxed space-y-2">
-                        <p>
-                          <span className="font-bold text-lg">Dolma Kalemi</span> <span className="font-bold">50 TL</span>'den 10 adet al → Toplam: <span className="font-bold">500 TL</span>
+                    {/* Al-Sat Stratejisi */}
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs">2</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-800">Akıllı Alım-Satım</p>
+                        <p className="text-sm">Ürünleri sabit fiyattan satın alın, piyasa fiyatları değişince kârlı satışlar yapın. Borsa grafiklerini takip ederek en iyi zamanlamayı yakalayın!</p>
+                      </div>
+                    </div>
+                    
+                    {/* Portföy Yönetimi */}
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-purple-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs">3</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-800">Çift Kazanç Sistemi</p>
+                        <p className="text-sm">
+                          <span className="font-medium text-green-600">Borsada sat</span> → Anlık kâr! Fiyat yükselince portföyündeki ürünleri sat.
+                          <br/>
+                          <span className="font-medium text-blue-600">Kargoya ver</span> → Gerçek satış! Müşterilere gönder, garantili gelir.
                         </p>
-                        
-                        <div className="bg-green-50 rounded-lg p-3 border-l-4 border-green-500">
-                          <p className="font-semibold text-green-700 mb-1">✅ SEÇENEK 1: Borsada Sat</p>
-                          <p>Piyasa fiyatı <span className="font-bold text-green-600 text-lg">55 TL</span>'ye çıkınca sat → Gelir: <span className="font-bold">550 TL</span><br/>
-                          <span className="font-bold text-green-600 text-xl">Kar: +50 TL (%10)</span> 🎉</p>
-                        </div>
-                        
-                        <div className="bg-blue-50 rounded-lg p-3 border-l-4 border-blue-500">
-                          <p className="font-semibold text-blue-700 mb-1">✅ SEÇENEK 2: Evine Kargola</p>
-                          <p>İstersen ürünü satmak yerine direkt <span className="font-bold text-blue-600">evine kargolat</span>! 📦<br/>
-                          Portföyünden çıkar, siparişlerime eklenir. Kullanmak için al!</p>
-                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                
-                <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto">
-                  <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
-                    <button onClick={() => { setAuthMode('login'); setAuthError(''); }} className={`flex-1 py-3 rounded-lg font-medium transition ${authMode === 'login' ? 'bg-white text-indigo-600 shadow' : 'text-gray-600'}`}>Giriş Yap</button>
-                    <button onClick={() => { setAuthMode('register'); setAuthError(''); }} className={`flex-1 py-3 rounded-lg font-medium transition ${authMode === 'register' ? 'bg-white text-indigo-600 shadow' : 'text-gray-600'}`}>Kayıt Ol</button>
+                    
+                    {/* Başlangıç Sermayesi */}
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-xs">4</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-800">10,000 TL Başlangıç</p>
+                        <p className="text-sm">Her yeni kullanıcı 10,000 TL sanal sermaye ile başlar. Risk almadan trading stratejileri geliştir, deneyim kazan!</p>
+                      </div>
+                    </div>
                   </div>
                   
-                  {authMode === 'login' ? (
-                    <form onSubmit={handleLogin} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Email</label>
-                        <div className="relative">
-                          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><Icons.Mail /></div>
-                          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="ornek@email.com" required />
+                  {/* Örnek Senaryo */}
+                  <div className="mt-5 bg-white rounded-lg p-4 border-2 border-indigo-200">
+                    <p className="text-xs font-semibold text-indigo-600 mb-2">💰 ÖRNEK SENARYO:</p>
+                    <p className="text-sm text-gray-700">
+                      Kalemi <span className="font-bold">50 TL</span>'den 10 adet al → Toplam: 500 TL<br/>
+                      Piyasa fiyatı <span className="font-bold text-green-600">55 TL</span>'ye çıkınca sat → Gelir: 550 TL<br/>
+                      <span className="font-bold text-green-600">Kar: +50 TL (%10)</span> 🎉
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Hoş Geldiniz */}
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2">TradeMart'a Hoş Geldiniz!</h3>
+                  <p className="text-gray-600">Hemen kayıt olun ve trading'e başlayın</p>
+                </div>
+                
+                {/* Tab Buttons */}
+                <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => {
+                      setAuthMode('login');
+                      setAuthError('');
+                    }}
+                    className={`flex-1 py-2 rounded-lg font-medium transition ${authMode === 'login' ? 'bg-white text-indigo-600 shadow' : 'text-gray-600'}`}
+                  >
+                    Giriş Yap
+                  </button>
+                  <button
+                    onClick={() => {
+                      setAuthMode('register');
+                      setAuthError('');
+                    }}
+                    className={`flex-1 py-2 rounded-lg font-medium transition ${authMode === 'register' ? 'bg-white text-indigo-600 shadow' : 'text-gray-600'}`}
+                  >
+                    Kayıt Ol
+                  </button>
+                </div>
+                
+                {/* Forms */}
+                {authMode === 'login' ? (
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Email</label>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          <Icons.Mail />
                         </div>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          placeholder="ornek@email.com"
+                          required
+                        />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Şifre</label>
-                        <div className="relative">
-                          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><Icons.Lock /></div>
-                          <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="••••••••" required />
-                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">{showPassword ? <Icons.EyeOff /> : <Icons.Eye />}</button>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Şifre</label>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          <Icons.Lock />
                         </div>
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          placeholder="••••••••"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        >
+                          {showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
+                        </button>
                       </div>
-                      {authError && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{authError}</div>}
-                      <button type="submit" disabled={authLoading} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center space-x-2">
-                        {authLoading ? <><div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div><span>Giriş yapılıyor...</span></> : <><Icons.LogIn /><span>Giriş Yap</span></>}
-                      </button>
-                    </form>
-                  ) : (
-                    <form onSubmit={handleRegister} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Ad Soyad</label>
-                        <div className="relative">
-                          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><Icons.User /></div>
-                          <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Ahmet Yılmaz" required />
+                    </div>
+                    
+                    {authError && (
+                      <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
+                        {authError}
+                      </div>
+                    )}
+                    
+                    <button
+                      type="submit"
+                      disabled={authLoading}
+                      className="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    >
+                      {authLoading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <span>Giriş yapılıyor...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Icons.LogIn />
+                          <span>Giriş Yap</span>
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleRegister} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Ad Soyad</label>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          <Icons.User />
                         </div>
+                        <input
+                          type="text"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          placeholder="Ahmet Yılmaz"
+                          required
+                        />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Email</label>
-                        <div className="relative">
-                          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><Icons.Mail /></div>
-                          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="ornek@email.com" required />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Email</label>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          <Icons.Mail />
                         </div>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          placeholder="ornek@email.com"
+                          required
+                        />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Şifre (en az 6 karakter)</label>
-                        <div className="relative">
-                          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"><Icons.Lock /></div>
-                          <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="••••••••" minLength={6} required />
-                          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">{showPassword ? <Icons.EyeOff /> : <Icons.Eye />}</button>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Şifre (en az 6 karakter)</label>
+                      <div className="relative">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                          <Icons.Lock />
                         </div>
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          placeholder="••••••••"
+                          minLength={6}
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        >
+                          {showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
+                        </button>
                       </div>
-                      {authError && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{authError}</div>}
-                      <button type="submit" disabled={authLoading} className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 disabled:opacity-50 flex items-center justify-center space-x-2">
-                        {authLoading ? <><div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div><span>Kayıt yapılıyor...</span></> : <><Icons.UserPlus /><span>Kayıt Ol</span></>}
-                      </button>
-                    </form>
+                    </div>
+                    
+                    {authError && (
+                      <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
+                        {authError}
+                      </div>
+                    )}
+                    
+                    <button
+                      type="submit"
+                      disabled={authLoading}
+                      className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    >
+                      {authLoading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <span>Kayıt yapılıyor...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Icons.UserPlus />
+                          <span>Kayıt Ol</span>
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+                
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <div className="flex items-center justify-center space-x-2 text-sm text-gray-500 mb-3">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    <p>10,000 TL başlangıç sermayesi ile trading deneyimini yaşayın</p>
+                  </div>
+                  <p className="text-center text-xs text-gray-500">Kayıt olarak kullanım şartlarını kabul etmiş olursunuz.</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Header */}
+          <header className="bg-white shadow-md">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Icons.TrendingUp />
+                  <h1 className="text-2xl font-bold text-gray-800">TradeMart</h1>
+                </div>
+                <div className="flex items-center space-x-6">
+                  {isAuthenticated && (
+                    <>
+                      <div className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg">
+                        <Icons.Wallet />
+                        <span className="font-semibold text-green-700">{balance.toFixed(2)} TL</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                            {currentUser?.fullName?.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold">{currentUser?.fullName}</p>
+                            <p className="text-xs text-gray-500">{currentUser?.email}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center space-x-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100"
+                        >
+                          <Icons.LogOut />
+                          <span>Çıkış</span>
+                        </button>
+                      </div>
+                    </>
                   )}
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <p className="text-center text-sm text-gray-500">Sınırsız alım-satım ile trading deneyimini yaşayın 🚀</p>
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          {/* Navigation */}
+          {isAuthenticated && (
+            <nav className="bg-white border-b">
+              <div className="container mx-auto px-4">
+                <div className="flex space-x-8">
+                  <button
+                    onClick={() => setCurrentPage('market')}
+                    className={`py-4 px-2 border-b-2 ${currentPage === 'market' ? 'border-indigo-600 text-indigo-600' : 'border-transparent'}`}
+                  >
+                    Pazar
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage('portfolio')}
+                    className={`py-4 px-2 border-b-2 ${currentPage === 'portfolio' ? 'border-indigo-600 text-indigo-600' : 'border-transparent'}`}
+                  >
+                    Portföyüm
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage('orders')}
+                    className={`py-4 px-2 border-b-2 ${currentPage === 'orders' ? 'border-indigo-600 text-indigo-600' : 'border-transparent'}`}
+                  >
+                    Siparişlerim
+                  </button>
+                </div>
+              </div>
+            </nav>
+          )}
+          
+          {/* Main Content */}
+          {isAuthenticated && (
+            <main className="container mx-auto px-4 py-8">
+              {/* Pazar */}
+              {currentPage === 'market' && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6">Pazar</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {products.map(product => (
+                      <div key={product.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
+                        <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                        <p className="text-gray-500 mb-4">{product.category}</p>
+                        <div className="mb-4">
+                          <div className="flex justify-between mb-2">
+                            <span>Alış:</span>
+                            <span className="font-bold">{product.price.toFixed(2)} TL</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Piyasa:</span>
+                            <span className="font-bold">{product.marketPrice.toFixed(2)} TL</span>
+                          </div>
+                          <div className="flex justify-between mt-2">
+                            <span className="text-sm">Değişim:</span>
+                            <span className={`text-sm font-bold ${product.marketPrice >= product.price ? 'text-green-600' : 'text-red-600'}`}>
+                              {product.marketPrice >= product.price ? '+' : ''}{((product.marketPrice - product.price) / product.price * 100).toFixed(2)}%
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <button
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setShowChartModal(true);
+                            setTradeType('buy');
+                            setTradeAmount(1);
+                          }}
+                          className="w-full bg-purple-600 text-white py-2 rounded-lg mb-2 hover:bg-purple-700"
+                        >
+                          📊 Borsa Grafiği
+                        </button>
+                        
+                        <button
+                          onClick={() => {
+                            const qty = parseInt(prompt('Kaç adet?', '1'));
+                            if (qty > 0) quickBuy(product, qty);
+                          }}
+                          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
+                        >
+                          Hızlı Al
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Portföy */}
+              {currentPage === 'portfolio' && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6">Portföyüm</h2>
+                  {portfolio.length === 0 ? (
+                    <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+                      <p className="text-gray-500 text-lg">Portföyünüz boş</p>
+                      <button
+                        onClick={() => setCurrentPage('market')}
+                        className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+                      >
+                        Pazar'a Git
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid gap-6">
+                      {portfolio.map(item => {
+                        const product = products.find(p => p.id === item.productId);
+                        const currentValue = product ? product.marketPrice * item.quantity : 0;
+                        const profit = currentValue - item.totalInvested;
+                        const profitPercent = (profit / item.totalInvested) * 100;
+                        
+                        return (
+                          <div key={item.productId} className="bg-white rounded-xl shadow-lg p-6">
+                            <div className="flex justify-between items-center mb-4">
+                              <h3 className="text-2xl font-bold">{item.productName}</h3>
+                              <span className="text-lg font-semibold">Miktar: {item.quantity}</span>
+                            </div>
+                            <div className="grid grid-cols-4 gap-4 mb-4">
+                              <div>
+                                <p className="text-gray-500 text-sm">Ortalama Alış</p>
+                                <p className="font-bold">{item.avgBuyPrice?.toFixed(2)} TL</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500 text-sm">Mevcut Fiyat</p>
+                                <p className="font-bold">{product?.marketPrice.toFixed(2)} TL</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500 text-sm">Toplam Değer</p>
+                                <p className="font-bold">{currentValue.toFixed(2)} TL</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500 text-sm">Kar/Zarar</p>
+                                <p className={`font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                  {profit >= 0 ? '+' : ''}{profit.toFixed(2)} TL ({profit >= 0 ? '+' : ''}{profitPercent.toFixed(2)}%)
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex gap-4">
+                              <button
+                                onClick={() => {
+                                  const qty = parseInt(prompt(`Kaç adet satmak istersiniz? (Max: ${item.quantity})`, '1'));
+                                  if (qty > 0 && qty <= item.quantity) sellProduct(item, qty);
+                                }}
+                                className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700"
+                              >
+                                Borsada Sat
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const qty = parseInt(prompt(`Kaç adet kargoya verilsin? (Max: ${item.quantity})`, '1'));
+                                  if (qty > 0 && qty <= item.quantity) orderShipping(item, qty);
+                                }}
+                                className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+                              >
+                                Kargoya Ver
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Siparişler */}
+              {currentPage === 'orders' && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6">Siparişlerim</h2>
+                  {orders.length === 0 ? (
+                    <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+                      <p className="text-gray-500 text-lg">Henüz sipariş yok</p>
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left">Ürün</th>
+                            <th className="px-6 py-3 text-left">Miktar</th>
+                            <th className="px-6 py-3 text-left">Durum</th>
+                            <th className="px-6 py-3 text-left">Tarih</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {orders.map(order => (
+                            <tr key={order.id} className="border-t hover:bg-gray-50">
+                              <td className="px-6 py-4 font-medium">{order.productName}</td>
+                              <td className="px-6 py-4">{order.quantity}</td>
+                              <td className="px-6 py-4">
+                                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                  {order.status}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-gray-500">{order.date}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
+            </main>
+          )}
+          
+          {/* Borsa Modal */}
+          {showChartModal && selectedProduct && (
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setShowChartModal(false);
+                }
+              }}
+            >
+              <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-4 rounded-t-2xl">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-2xl font-bold">{selectedProduct.name} - Borsa Grafiği</h2>
+                    <button 
+                      onClick={() => {
+                        setShowChartModal(false);
+                        setTradeAmount(1);
+                        setTradeType('buy');
+                      }}
+                      className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg p-2"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <div className="mt-2 flex gap-4 text-sm">
+                    <span>Alış: {selectedProduct.price.toFixed(2)} TL</span>
+                    <span>Piyasa: {selectedProduct.marketPrice.toFixed(2)} TL</span>
+                    <span className={selectedProduct.marketPrice >= selectedProduct.price ? 'text-green-300' : 'text-red-300'}>
+                      {((selectedProduct.marketPrice - selectedProduct.price) / selectedProduct.price * 100).toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  {/* Mum Grafiği */}
+                  <div className="bg-gray-900 rounded-xl p-6 mb-6">
+                    <h3 className="text-white text-lg font-bold mb-4">Fiyat Hareketi (Son 20 İşlem)</h3>
+                    {selectedProduct.priceHistory && selectedProduct.priceHistory.length > 0 ? (
+                      <div className="relative h-64">
+                        <svg className="w-full h-full">
+                          {(() => {
+                            const history = selectedProduct.priceHistory;
+                            const maxPrice = Math.max(...history.map(d => d.high));
+                            const minPrice = Math.min(...history.map(d => d.low));
+                            const priceRange = maxPrice - minPrice || 1;
+                            const width = 100 / history.length;
+                            
+                            return history.map((candle, index) => {
+                              const x = index * width;
+                              const centerX = x + width / 2;
+                              
+                              const yHigh = ((maxPrice - candle.high) / priceRange) * 90 + 5;
+                              const yLow = ((maxPrice - candle.low) / priceRange) * 90 + 5;
+                              const yOpen = ((maxPrice - candle.open) / priceRange) * 90 + 5;
+                              const yClose = ((maxPrice - candle.close) / priceRange) * 90 + 5;
+                              
+                              const isGreen = candle.close >= candle.open;
+                              const bodyTop = Math.min(yOpen, yClose);
+                              const bodyHeight = Math.abs(yClose - yOpen) || 0.5;
+                              
+                              return (
+                                <g key={index}>
+                                  <line
+                                    x1={`${centerX}%`}
+                                    y1={`${yHigh}%`}
+                                    x2={`${centerX}%`}
+                                    y2={`${yLow}%`}
+                                    stroke={isGreen ? '#10b981' : '#ef4444'}
+                                    strokeWidth="1"
+                                  />
+                                  <rect
+                                    x={`${x + width * 0.2}%`}
+                                    y={`${bodyTop}%`}
+                                    width={`${width * 0.6}%`}
+                                    height={`${bodyHeight}%`}
+                                    fill={isGreen ? '#10b981' : '#ef4444'}
+                                  />
+                                </g>
+                              );
+                            });
+                          })()}
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-64 text-gray-400">
+                        <div className="text-center">
+                          <p>Veri toplanıyor...</p>
+                          <p className="text-sm">Lütfen bekleyin</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Al-Sat Paneli */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className={`border-2 rounded-xl p-6 ${tradeType === 'buy' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+                      <button
+                        onClick={() => setTradeType('buy')}
+                        className={`w-full py-3 rounded-lg font-bold mb-4 ${tradeType === 'buy' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+                      >
+                        📈 SATIN AL
+                      </button>
+                      
+                      {tradeType === 'buy' && (
+                        <>
+                          <div className="mb-4">
+                            <label className="block text-sm font-medium mb-2">Miktar:</label>
+                            <input
+                              type="number"
+                              value={tradeAmount}
+                              onChange={(e) => setTradeAmount(Math.max(1, parseInt(e.target.value) || 1))}
+                              className="w-full px-4 py-2 border rounded-lg"
+                              min="1"
+                            />
+                          </div>
+                          
+                          <div className="bg-white rounded-lg p-4 mb-4 space-y-2">
+                            <div className="flex justify-between">
+                              <span>Fiyat:</span>
+                              <span className="font-bold">{selectedProduct.price.toFixed(2)} TL</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Miktar:</span>
+                              <span className="font-bold">{tradeAmount}</span>
+                            </div>
+                            <div className="flex justify-between border-t pt-2">
+                              <span className="font-bold">Toplam:</span>
+                              <span className="font-bold text-green-600">
+                                {(selectedProduct.price * tradeAmount).toFixed(2)} TL
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-sm">Bakiye:</span>
+                              <span className="text-sm">{balance.toFixed(2)} TL</span>
+                            </div>
+                          </div>
+                          
+                          <button
+                            onClick={quickBuyFromChart}
+                            className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700"
+                          >
+                            AL
+                          </button>
+                        </>
+                      )}
+                    </div>
+                    
+                    <div className={`border-2 rounded-xl p-6 ${tradeType === 'sell' ? 'border-red-500 bg-red-50' : 'border-gray-200'}`}>
+                      <button
+                        onClick={() => setTradeType('sell')}
+                        className={`w-full py-3 rounded-lg font-bold mb-4 ${tradeType === 'sell' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+                      >
+                        📉 SAT
+                      </button>
+                      
+                      {tradeType === 'sell' && (() => {
+                        const portfolioItem = portfolio.find(p => p.productId === selectedProduct.id);
+                        const maxSellAmount = portfolioItem ? portfolioItem.quantity : 0;
+                        const potentialProfit = portfolioItem ? (selectedProduct.marketPrice - portfolioItem.avgBuyPrice) * tradeAmount : 0;
+                        
+                        return (
+                          <>
+                            <div className="mb-4">
+                              <label className="block text-sm font-medium mb-2">Miktar:</label>
+                              <input
+                                type="number"
+                                value={tradeAmount}
+                                onChange={(e) => setTradeAmount(Math.max(1, Math.min(maxSellAmount, parseInt(e.target.value) || 1)))}
+                                className="w-full px-4 py-2 border rounded-lg"
+                                min="1"
+                                max={maxSellAmount}
+                              />
+                              <p className="text-sm text-gray-500 mt-1">Maksimum: {maxSellAmount}</p>
+                            </div>
+                            
+                            <div className="bg-white rounded-lg p-4 mb-4 space-y-2">
+                              <div className="flex justify-between">
+                                <span>Piyasa Fiyatı:</span>
+                                <span className="font-bold">{selectedProduct.marketPrice.toFixed(2)} TL</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Miktar:</span>
+                                <span className="font-bold">{tradeAmount}</span>
+                              </div>
+                              <div className="flex justify-between border-t pt-2">
+                                <span className="font-bold">Toplam Gelir:</span>
+                                <span className="font-bold text-red-600">
+                                  {(selectedProduct.marketPrice * tradeAmount).toFixed(2)} TL
+                                </span>
+                              </div>
+                              {portfolioItem && (
+                                <>
+                                  <div className="flex justify-between">
+                                    <span className="text-sm">Ortalama Alış:</span>
+                                    <span className="text-sm">{portfolioItem.avgBuyPrice.toFixed(2)} TL</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-sm font-medium">Kar/Zarar:</span>
+                                    <span className={`text-sm font-medium ${potentialProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                      {potentialProfit >= 0 ? '+' : ''}{potentialProfit.toFixed(2)} TL
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            
+                            <button
+                              onClick={quickSellFromChart}
+                              disabled={maxSellAmount === 0}
+                              className={`w-full py-3 rounded-lg font-bold ${maxSellAmount > 0 ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                            >
+                              {maxSellAmount > 0 ? 'SAT' : 'Portföyde Yok'}
+                            </button>
+                          </>
+                        );
+                      })()}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      }
-      
-      // ... (geri kalan kod aynı - çok uzun olduğu için kısalttım)
-      return <div>Authenticated view...</div>;
+          )}
+        </div>
+      );
     }
     
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
