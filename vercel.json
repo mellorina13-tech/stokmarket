@@ -12,6 +12,16 @@
   ],
   "routes": [
     {
+      "src": "/api/auth",
+      "methods": ["GET", "POST", "OPTIONS"],
+      "dest": "/api/auth.js"
+    },
+    {
+      "src": "/api/portfolio",
+      "methods": ["GET", "POST", "OPTIONS"],
+      "dest": "/api/portfolio.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
@@ -19,6 +29,8 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url"
+  }
 }
-
