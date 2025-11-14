@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradeMart - E-Ticaret & Borsa Platformu</title>
+  <title>StokMarket - E-Ticaret & Borsa Platformu</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -151,12 +154,12 @@
     
     // Ürünler
     const INITIAL_PRODUCTS = [
-      { id: 1, name: 'Kalem', price: 50, marketPrice: 50, category: 'Kırtasiye', stock: 1000, priceHistory: [] },
-      { id: 2, name: 'Defter', price: 30, marketPrice: 30, category: 'Kırtasiye', stock: 500, priceHistory: [] },
-      { id: 3, name: 'Silgi', price: 10, marketPrice: 10, category: 'Kırtasiye', stock: 800, priceHistory: [] },
-      { id: 4, name: 'Kalemtıraş', price: 15, marketPrice: 15, category: 'Kırtasiye', stock: 600, priceHistory: [] },
-      { id: 5, name: 'Cetvel', price: 20, marketPrice: 20, category: 'Kırtasiye', stock: 700, priceHistory: [] },
-      { id: 6, name: 'Makas', price: 35, marketPrice: 35, category: 'Kırtasiye', stock: 400, priceHistory: [] },
+      { id: 1, name: 'Kalem', price: 50, marketPrice: 50, category: 'Kırtasiye', stock: 1000, priceHistory: [], image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&h=300&fit=crop' },
+      { id: 2, name: 'Defter', price: 30, marketPrice: 30, category: 'Kırtasiye', stock: 500, priceHistory: [], image: 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=400&h=300&fit=crop' },
+      { id: 3, name: 'Silgi', price: 10, marketPrice: 10, category: 'Kırtasiye', stock: 800, priceHistory: [], image: 'https://images.unsplash.com/photo-1611532736579-6b16e2b50449?w=400&h=300&fit=crop' },
+      { id: 4, name: 'Kalemtıraş', price: 15, marketPrice: 15, category: 'Kırtasiye', stock: 600, priceHistory: [], image: 'https://images.unsplash.com/photo-1588075592446-265fd1e6e76f?w=400&h=300&fit=crop' },
+      { id: 5, name: 'Cetvel', price: 20, marketPrice: 20, category: 'Kırtasiye', stock: 700, priceHistory: [], image: 'https://images.unsplash.com/photo-1596495577886-d920f1fb7238?w=400&h=300&fit=crop' },
+      { id: 6, name: 'Makas', price: 35, marketPrice: 35, category: 'Kırtasiye', stock: 400, priceHistory: [], image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&h=300&fit=crop' },
     ];
     
     function App() {
@@ -190,8 +193,8 @@
       
       // Session kontrolü
       useEffect(() => {
-        const savedUser = localStorage.getItem('trademart_user');
-        const savedToken = localStorage.getItem('trademart_token');
+        const savedUser = localStorage.getItem('stokmarket_user');
+        const savedToken = localStorage.getItem('stokmarket_token');
         
         if (savedUser && savedToken) {
           try {
@@ -205,8 +208,8 @@
             loadUserData(user.id);
           } catch (error) {
             console.error('Session error:', error);
-            localStorage.removeItem('trademart_user');
-            localStorage.removeItem('trademart_token');
+            localStorage.removeItem('stokmarket_user');
+            localStorage.removeItem('stokmarket_token');
           }
         }
       }, []);
@@ -286,8 +289,8 @@
             setShowAuthModal(false);
             
             // Session kaydet
-            localStorage.setItem('trademart_user', JSON.stringify(result.user));
-            localStorage.setItem('trademart_token', result.token);
+            localStorage.setItem('stokmarket_user', JSON.stringify(result.user));
+            localStorage.setItem('stokmarket_token', result.token);
             
             // Kullanıcı verilerini yükle
             await loadUserData(result.user.id);
@@ -330,8 +333,8 @@
             setShowAuthModal(false);
             
             // Session kaydet
-            localStorage.setItem('trademart_user', JSON.stringify(result.user));
-            localStorage.setItem('trademart_token', result.token);
+            localStorage.setItem('stokmarket_user', JSON.stringify(result.user));
+            localStorage.setItem('stokmarket_token', result.token);
             
             // Kullanıcı verilerini yükle
             await loadUserData(result.user.id);
@@ -353,8 +356,8 @@
       // Çıkış
       const handleLogout = () => {
         if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
-          localStorage.removeItem('trademart_user');
-          localStorage.removeItem('trademart_token');
+          localStorage.removeItem('stokmarket_user');
+          localStorage.removeItem('stokmarket_token');
           setCurrentUser(null);
           setUserToken(null);
           setIsAuthenticated(false);
@@ -918,9 +921,13 @@
                   <h2 className="text-3xl font-bold mb-6">Pazar</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.map(product => (
-                      <div key={product.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition">
-                        <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-                        <p className="text-gray-500 mb-4">{product.category}</p>
+                      <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                        {product.image && (
+                          <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                        )}
+                        <div className="p-6">
+                          <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                          <p className="text-gray-500 mb-4">{product.category}</p>
                         <div className="mb-4">
                           <div className="flex justify-between mb-2">
                             <span>Alış:</span>
@@ -937,28 +944,29 @@
                             </span>
                           </div>
                         </div>
-                        
-                        <button
-                          onClick={() => {
-                            setSelectedProduct(product);
-                            setShowChartModal(true);
-                            setTradeType('buy');
-                            setTradeAmount(1);
-                          }}
-                          className="w-full bg-purple-600 text-white py-2 rounded-lg mb-2 hover:bg-purple-700"
-                        >
-                          📊 Borsa Grafiği
-                        </button>
-                        
-                        <button
-                          onClick={() => {
-                            const qty = parseInt(prompt('Kaç adet?', '1'));
-                            if (qty > 0) quickBuy(product, qty);
-                          }}
-                          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
-                        >
-                          Hızlı Al
-                        </button>
+
+                          <button
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setShowChartModal(true);
+                              setTradeType('buy');
+                              setTradeAmount(1);
+                            }}
+                            className="w-full bg-purple-600 text-white py-2 rounded-lg mb-2 hover:bg-purple-700"
+                          >
+                            📊 Borsa Grafiği
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              const qty = parseInt(prompt('Kaç adet?', '1'));
+                              if (qty > 0) quickBuy(product, qty);
+                            }}
+                            className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
+                          >
+                            Hızlı Al
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
