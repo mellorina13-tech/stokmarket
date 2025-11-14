@@ -1,6 +1,7 @@
 // api/auth.js - Vercel Serverless Function
 import { neon } from '@neondatabase/serverless';
 
+// Database connection
 const sql = neon(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
@@ -15,13 +16,34 @@ export default async function handler(req, res) {
     return;
   }
   
-  // Handle GET requests - API health check
+  // Handle GET requests - API health check + DB test
   if (req.method === 'GET') {
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Auth API is running',
-      endpoints: ['register', 'login', 'getUserData', 'updateBalance']
-    });
+    try {
+      // Test database connection
+      const dbTest = await sql`SELECT NOW() as current_time`;
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Auth API is running',
+        database: 'connected',
+        dbTime: dbTest[0].current_time,
+        endpoints: ['register', 'login', 'getUserData', 'updateBalance'],
+        env: {
+          hasDatabaseUrl: !!process.env.DATABASE_URL,
+          databaseUrlPrefix: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 15) + '...' : 'NOT SET'
+        }
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'API running but database connection failed',
+        error: error.message,
+        env: {
+          hasDatabaseUrl: !!process.env.DATABASE_URL,
+          databaseUrlPrefix: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 15) + '...' : 'NOT SET'
+        }
+      });
+    }
   }
   
   // Only accept POST requests for actual operations
