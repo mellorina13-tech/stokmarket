@@ -1,14 +1,17 @@
 // api/auth/index.js
 import { neon } from '@neondatabase/serverless';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const sql = neon(process.env.DATABASE_URL);
+const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-key-change-in-production';
 
 export default async function handler(req, res) {
-  // CORS headers
+  // CORS headers - Sadece kendi domain'inden izin ver
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
   
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -18,7 +21,6 @@ export default async function handler(req, res) {
   // Handle GET requests - API health check + DB test
   if (req.method === 'GET') {
     try {
-      // Test database connection
       const dbTest = await sql`SELECT NOW() as current_time`;
       
       return res.status(200).json({ 
@@ -29,6 +31,7 @@ export default async function handler(req, res) {
         endpoints: ['register', 'login', 'getUserData', 'updateBalance'],
         env: {
           hasDatabaseUrl: !!process.env.DATABASE_URL,
+          hasJwtSecret: !!process.env.JWT_SECRET,
           nodeVersion: process.version
         }
       });
@@ -44,7 +47,6 @@ export default async function handler(req, res) {
     }
   }
   
-  // Only accept POST requests for actual operations
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method not allowed. Use POST.' });
   }
@@ -52,10 +54,21 @@ export default async function handler(req, res) {
   const { action, email, password, fullName, userId, balance } = req.body || {};
   
   try {
-    // Kullanıcı Kaydı
+    // ✅ Kullanıcı Kaydı - GÜVENLİ
     if (action === 'register') {
       if (!email || !password || !fullName) {
         return res.status(400).json({ success: false, message: 'Email, şifre ve ad soyad gerekli!' });
+      }
+      
+      // Email formatı kontrolü
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ success: false, message: 'Geçerli bir email adresi girin!' });
+      }
+      
+      // Şifre uzunluk kontrolü
+      if (password.length < 6) {
+        return res.status(400).json({ success: false, message: 'Şifre en az 6 karakter olmalı!' });
       }
       
       // Email kontrolü
@@ -67,15 +80,24 @@ export default async function handler(req, res) {
         return res.status(400).json({ success: false, message: 'Bu email zaten kayıtlı!' });
       }
       
+      // 🔒 ŞİFREYİ HASH'LE
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
       // Yeni kullanıcı oluştur
       const result = await sql`
         INSERT INTO users (email, password, full_name, balance, created_at)
-        VALUES (${email}, ${password}, ${fullName}, 10000, NOW())
+        VALUES (${email}, ${hashedPassword}, ${fullName}, 10000, NOW())
         RETURNING id, email, full_name, balance, created_at
       `;
       
       const user = result[0];
-      const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+      
+      // 🔐 JWT TOKEN OLUŞTUR
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
       
       return res.status(200).json({
         success: true,
@@ -89,14 +111,14 @@ export default async function handler(req, res) {
       });
     }
     
-    // Kullanıcı Girişi
+    // ✅ Kullanıcı Girişi - GÜVENLİ
     if (action === 'login') {
       if (!email || !password) {
         return res.status(400).json({ success: false, message: 'Email ve şifre gerekli!' });
       }
       
       const result = await sql`
-        SELECT * FROM users WHERE email = ${email} AND password = ${password}
+        SELECT * FROM users WHERE email = ${email}
       `;
       
       if (result.length === 0) {
@@ -104,7 +126,20 @@ export default async function handler(req, res) {
       }
       
       const user = result[0];
-      const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
+      
+      // 🔒 ŞİFRE KONTROLÜ (HASH'LENMİŞ)
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      
+      if (!isPasswordValid) {
+        return res.status(401).json({ success: false, message: 'Email veya şifre hatalı!' });
+      }
+      
+      // 🔐 JWT TOKEN
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
       
       return res.status(200).json({
         success: true,
