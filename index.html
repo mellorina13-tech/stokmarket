@@ -515,8 +515,213 @@
         );
       }
       
-      // ... (geri kalan kod aynı - çok uzun olduğu için kısalttım)
-      return <div>Authenticated view...</div>;
+      // Ana uygulama - Giriş yapıldıktan sonra
+      return (
+        <div className="min-h-screen bg-gray-50">
+          <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+            <div className="container mx-auto px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Icons.TrendingUp />
+                  <h1 className="text-2xl font-bold text-gray-800">StokMarket</h1>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 bg-green-50 px-4 py-2 rounded-lg">
+                    <Icons.Wallet />
+                    <span className="font-bold text-green-700">{balance.toFixed(2)} TL</span>
+                  </div>
+                  <div className="hidden md:flex items-center space-x-2 text-gray-600">
+                    <Icons.User />
+                    <span className="font-medium">{currentUser?.fullName}</span>
+                  </div>
+                  <button onClick={handleLogout} className="flex items-center space-x-1 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                    <Icons.LogOut />
+                    <span className="hidden md:inline">Çıkış</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <nav className="bg-white border-b sticky top-[60px] z-40">
+            <div className="container mx-auto px-4">
+              <div className="flex space-x-1">
+                {['market', 'portfolio', 'orders'].map(page => (
+                  <button key={page} onClick={() => setCurrentPage(page)} className={`px-6 py-3 font-medium transition ${currentPage === page ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}>
+                    {page === 'market' ? '🏪 Market' : page === 'portfolio' ? '💼 Portföy' : '📦 Siparişler'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </nav>
+          
+          <main className="container mx-auto px-4 py-6">
+            {currentPage === 'market' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6">Ürünler</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {products.map(product => (
+                    <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                      <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                      <div className="p-5">
+                        <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Alış Fiyatı:</span>
+                            <span className="font-bold text-blue-600">{product.price.toFixed(2)} TL</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Piyasa Fiyatı:</span>
+                            <span className="font-bold text-green-600">{product.marketPrice.toFixed(2)} TL</span>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <button onClick={() => { if (balance >= product.price) quickBuy(product, 1); else alert('Yetersiz bakiye!'); }} className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                            Hızlı Al (1 adet)
+                          </button>
+                          <button onClick={() => { setSelectedProduct(product); setShowChartModal(true); setTradeType('buy'); }} className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                            Grafik & İşlem
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {currentPage === 'portfolio' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6">Portföyüm</h2>
+                {portfolio.length === 0 ? (
+                  <div className="bg-white rounded-xl p-12 text-center">
+                    <p className="text-gray-500 text-lg">Portföyünüz boş. Market'ten ürün satın alın!</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4">
+                    {portfolio.map(item => {
+                      const product = products.find(p => p.id === item.productId);
+                      const currentValue = product ? product.marketPrice * item.quantity : 0;
+                      const profitLoss = currentValue - item.totalInvested;
+                      const profitLossPercent = (profitLoss / item.totalInvested) * 100;
+                      
+                      return (
+                        <div key={item.productId} className="bg-white rounded-xl p-6 shadow-lg">
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <h3 className="text-xl font-bold">{item.productName}</h3>
+                              <p className="text-gray-600">Adet: {item.quantity}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm text-gray-600">Ort. Alış: {item.avgBuyPrice.toFixed(2)} TL</p>
+                              <p className="text-sm text-gray-600">Güncel: {product?.marketPrice.toFixed(2)} TL</p>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-3 gap-4 mb-4">
+                            <div className="bg-blue-50 p-3 rounded-lg">
+                              <p className="text-xs text-gray-600">Toplam Yatırım</p>
+                              <p className="font-bold text-blue-600">{item.totalInvested.toFixed(2)} TL</p>
+                            </div>
+                            <div className="bg-green-50 p-3 rounded-lg">
+                              <p className="text-xs text-gray-600">Güncel Değer</p>
+                              <p className="font-bold text-green-600">{currentValue.toFixed(2)} TL</p>
+                            </div>
+                            <div className={`${profitLoss >= 0 ? 'bg-green-50' : 'bg-red-50'} p-3 rounded-lg`}>
+                              <p className="text-xs text-gray-600">Kar/Zarar</p>
+                              <p className={`font-bold ${profitLoss >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {profitLoss >= 0 ? '+' : ''}{profitLoss.toFixed(2)} TL ({profitLoss >= 0 ? '+' : ''}{profitLossPercent.toFixed(1)}%)
+                              </p>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button onClick={() => { const qty = parseInt(prompt('Kaç adet satmak istersiniz?', '1')); if (qty > 0 && qty <= item.quantity) sellProduct(item, qty); }} className="bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
+                              Borsada Sat
+                            </button>
+                            <button onClick={() => { const qty = parseInt(prompt('Kaç adet kargoya verilsin?', '1')); if (qty > 0 && qty <= item.quantity) orderShipping(item, qty); }} className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                              Kargoya Ver
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {currentPage === 'orders' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-6">Siparişlerim</h2>
+                {orders.length === 0 ? (
+                  <div className="bg-white rounded-xl p-12 text-center">
+                    <p className="text-gray-500 text-lg">Henüz sipariş vermediniz.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {orders.map(order => (
+                      <div key={order.id} className="bg-white rounded-xl p-6 shadow-lg flex justify-between items-center">
+                        <div>
+                          <h3 className="text-lg font-bold">{order.productName}</h3>
+                          <p className="text-gray-600">Adet: {order.quantity}</p>
+                          <p className="text-sm text-gray-500">Tarih: {order.date}</p>
+                        </div>
+                        <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-medium">
+                          {order.status}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </main>
+          
+          {showChartModal && selectedProduct && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <h2 className="text-2xl font-bold">{selectedProduct.name}</h2>
+                      <p className="text-gray-600">Piyasa Fiyatı: <span className="font-bold text-green-600">{selectedProduct.marketPrice.toFixed(2)} TL</span></p>
+                    </div>
+                    <button onClick={() => setShowChartModal(false)} className="text-gray-500 hover:text-gray-700 text-3xl">&times;</button>
+                  </div>
+                  
+                  <div className="mb-6">
+                    <div className="flex space-x-2 mb-4">
+                      <button onClick={() => setTradeType('buy')} className={`flex-1 py-2 rounded-lg font-bold ${tradeType === 'buy' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>AL</button>
+                      <button onClick={() => setTradeType('sell')} className={`flex-1 py-2 rounded-lg font-bold ${tradeType === 'sell' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>SAT</button>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-2">Adet</label>
+                      <input type="number" value={tradeAmount} onChange={(e) => setTradeAmount(parseInt(e.target.value) || 1)} min="1" className="w-full border rounded-lg px-4 py-2" />
+                    </div>
+                    
+                    <div className="bg-gray-100 p-4 rounded-lg mb-4">
+                      <p className="text-sm text-gray-600">Toplam Tutar:</p>
+                      <p className="text-2xl font-bold text-gray-800">
+                        {tradeType === 'buy' ? (selectedProduct.price * tradeAmount).toFixed(2) : (selectedProduct.marketPrice * tradeAmount).toFixed(2)} TL
+                      </p>
+                    </div>
+                    
+                    {tradeType === 'buy' ? (
+                      <button onClick={quickBuyFromChart} disabled={balance < selectedProduct.price * tradeAmount} className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {balance >= selectedProduct.price * tradeAmount ? `${tradeAmount} Adet Satın Al` : 'Yetersiz Bakiye'}
+                      </button>
+                    ) : (
+                      <button onClick={quickSellFromChart} className="w-full bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700">
+                        {tradeAmount} Adet Sat
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
     }
     
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
